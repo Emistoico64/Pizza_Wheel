@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spin the Wheel</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background: #fdfdfd;
+        }
+        #wheel {
+            margin: 50px auto;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 10px solid #ccc;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+        #spinBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #spinBtn:hover {
+            background: #218838;
+        }
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid red;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        canvas {
+            transition: transform 5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Spin the Wheel & Win a Discount! 🎉</h1>
+    <div id="wheel">
+        <div class="arrow"></div>
+        <canvas id="canvas" width="500" height="500"></canvas>
+    </div>
+    <button id="spinBtn">SPIN</button>
+
+    <script>
+        const options = [
+            {label: "5% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/5-off"},
+            {label: "10% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/10_off"},
+            {label: "15% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/15_off"},
+            {label: "20% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/20_off"},
+            {label: "NO PRIZE", url: "https://www.bravopizzachef.com/the-luky-wheel/no-prize"},
+            {label: "5% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/5-off"},
+            {label: "10% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/10_off"},
+            {label: "15% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/15_off"},
+            {label: "20% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/20_off"},
+            {label: "NO PRIZE", url: "https://www.bravopizzachef.com/the-luky-wheel/no-prize"},
+            {label: "5% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/5-off"},
+            {label: "10% OFF", url: "https://www.bravopizzachef.com/the-luky-wheel/10_off"},
+        ];
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const radius = canvas.width / 2;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const spinBtn = document.getElementById("spinBtn");
+        let angle = 0;
+        let spinning = false;
+
+        function drawWheel() {
+            const arcSize = (2 * Math.PI) / options.length;
+            for (let i = 0; i < options.length; i++) {
+                const startAngle = i * arcSize;
+                ctx.beginPath();
+                ctx.fillStyle = i % 2 === 0 ? "#ffcc00" : "#ff6666";
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + arcSize);
+                ctx.fill();
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#000";
+                ctx.font = "16px Arial";
+                ctx.fillText(options[i].label, radius - 10, 10);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (spinning) return;
+            spinning = true;
+            const spinAngle = Math.floor(3600 + Math.random() * 360);
+            canvas.style.transform = `rotate(${spinAngle}deg)`;
+            setTimeout(() => {
+                const finalAngle = (spinAngle % 360);
+                const arcSize = 360 / options.length;
+                const index = Math.floor(((360 - finalAngle + arcSize / 2) % 360) / arcSize);
+                window.location.href = options[index].url;
+            }, 5000);
+        }
+
+        drawWheel();
+        spinBtn.addEventListener("click", spinWheel);
+    </script>
+</body>
+</html>
